@@ -1,5 +1,6 @@
 console.log("texan cat: meowdy");
 
+require("./webbserverutveckling/HTTP/bloggPosts.js");
 console.log(require("module").builtinModules);
 
 const http = require("http");
