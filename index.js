@@ -5,7 +5,7 @@ console.log(require("module").builtinModules);
 const http = require("http");
 const StringDecoder = require("string_decoder").StringDecoder;
 
-const httpServer = http.createServer((request /*response*/) => {
+const httpServer = http.createServer((request, response) => {
   let route = request.url;
   const method = request.method;
   let dynamicArguments = request.url.split("/");
@@ -20,13 +20,18 @@ const httpServer = http.createServer((request /*response*/) => {
   request.on("end", () => {
     payload += decoder.end();
 
-    console.log({
-      route,
-      dynamicArguments,
-      method,
-      headers,
-      payload
-    });
+    if (route === "forum" && method === "GET") {
+      response.setHeader("Content-Type", "application/json");
+      response.writeHead(200);
+      response.end(JSON.stringify({ post: "En forum post" }));
+    } else if (route === "forum" && method === "POST") {
+      response.setHeader("Content-Type", "application/json");
+      response.writeHead(200);
+      response.end(JSON.stringify({ meddelande: "Forum tråden lades till" }));
+    } else {
+      response.writeHead(404);
+      response.end("Sidan kunde inte hittas");
+    }
   });
 });
 
