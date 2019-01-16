@@ -1,12 +1,22 @@
 console.log("texan cat: meowdy");
 
-require("./webbserverutveckling/HTTP/bloggPosts.js");
+const blogPosts = require("./blogPosts.js");
 console.log(require("module").builtinModules);
 
 const http = require("http");
 const StringDecoder = require("string_decoder").StringDecoder;
 
 const httpServer = http.createServer((request, response) => {
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Request-Method", "*");
+  response.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
+  response.setHeader("Access-Control-Allow-Headers", "*");
+  if (request.method === "OPTIONS") {
+    response.writeHead(200);
+    response.end();
+    return;
+  }
+
   let route = request.url;
   const method = request.method;
   let dynamicArguments = request.url.split("/");
@@ -25,10 +35,10 @@ const httpServer = http.createServer((request, response) => {
       response.setHeader("Content-Type", "application/json");
       response.writeHead(200);
       response.end(JSON.stringify({ post: "En forum post" }));
-    } else if (route === "forum" && method === "POST") {
+    } else if (route === "posts" && method === "GET") {
       response.setHeader("Content-Type", "application/json");
       response.writeHead(200);
-      response.end(JSON.stringify({ meddelande: "Forum tråden lades till" }));
+      response.end(JSON.stringify(blogPosts));
     } else {
       response.writeHead(404);
       response.end("Sidan kunde inte hittas");
@@ -36,4 +46,4 @@ const httpServer = http.createServer((request, response) => {
   });
 });
 
-httpServer.listen(1338, () => console.log("Servern lyssnar nu på port 1338"));
+httpServer.listen(8000, () => console.log("Servern lyssnar nu på port 8000"));
