@@ -36,12 +36,18 @@ const httpServer = http.createServer((request, response) => {
       response.writeHead(200);
       response.end(JSON.stringify({ post: "En forum post" }));
     } else if (route === "posts" && method === "GET") {
-      response.setHeader("Content-Type", "application/json");
-      response.writeHead(200);
-      response.end(JSON.stringify(blogPosts));
-    } else {
-      response.writeHead(404);
-      response.end("Sidan kunde inte hittas");
+      if (dynamicArguments.length === 0) {
+        response.setHeader("Content-Type", "application/json");
+        response.writeHead(200);
+        response.end(JSON.stringify(blogPosts));
+      } else if (dynamicArguments.length === 1) {
+        const result = blogPosts.filter(post => post.id == dynamicArguments[0]);
+        response.writeHead(200);
+        response.end(JSON.stringify(result));
+      } else {
+        response.writeHead(404);
+        response.end("Sidan kunde inte hittas");
+      }
     }
   });
 });
