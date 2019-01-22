@@ -35,6 +35,18 @@ const httpServer = http.createServer((request, response) => {
       response.setHeader("Content-Type", "application/json");
       response.writeHead(200);
       response.end(JSON.stringify({ post: "En forum post" }));
+    } else if (route === "posts" && method === "POST") {
+      const data = JSON.parse(payload);
+      const blogPost = {
+        writtenBy: data.name,
+        content: data.content,
+        excerpt: data.content,
+        title: data.title,
+        id: blogPosts.length + 1
+      };
+      blogPosts.push(blogPost);
+      response.writeHead(200);
+      response.end();
     } else if (route === "posts" && method === "GET") {
       if (dynamicArguments.length === 0) {
         response.setHeader("Content-Type", "application/json");
